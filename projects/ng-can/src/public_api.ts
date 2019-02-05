@@ -3,5 +3,5 @@
  */
 
 export * from './lib/ng-can.service';
-export * from './lib/ng-can.component';
 export * from './lib/ng-can.module';
+export * from './lib/directives/can/can.directive';
