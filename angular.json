@@ -134,6 +134,41 @@
           }
         }
       }
+    },
+    "ng-can": {
+      "root": "projects/ng-can",
+      "sourceRoot": "projects/ng-can/src",
+      "projectType": "library",
+      "prefix": "ng-can",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ng-can/tsconfig.lib.json",
+            "project": "projects/ng-can/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ng-can/src/test.ts",
+            "tsConfig": "projects/ng-can/tsconfig.spec.json",
+            "karmaConfig": "projects/ng-can/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ng-can/tsconfig.lib.json",
+              "projects/ng-can/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ng-can-baseapp"
