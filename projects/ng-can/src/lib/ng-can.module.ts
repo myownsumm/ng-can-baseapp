@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
-import { NgCanComponent } from './ng-can.component';
+import { NgCanDirective } from './directives/can.directive';
 
 @NgModule({
-  declarations: [NgCanComponent],
-  imports: [
+  declarations: [
+    NgCanDirective
   ],
-  exports: [NgCanComponent]
+  imports: [],
+  exports: [
+    NgCanDirective
+  ]
 })
-export class NgCanModule { }
+export class NgCanModule {
+}
