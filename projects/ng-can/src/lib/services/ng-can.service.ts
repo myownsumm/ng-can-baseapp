@@ -14,17 +14,30 @@ export class NgCanService implements INgCanPermissionsCheckable {
     this._permissions = permissions;
   }
 
-  checkConditions(conditions: INgCanPermissions, strict: boolean) {
-    let show = true;
+  checkConditions(conditions: INgCanPermissions, strict?: boolean) {
+    let allowed = true;
 
     for (const key in conditions) {
-      if ((strict && this._permissions[key] === undefined) || this._permissions[key] === conditions[key]) {
-        show = false;
+      if (!conditions.hasOwnProperty(key)) {
+        continue;
+      }
+
+      if (this._permissions[key] === undefined) {
+        if (!strict) {
+          continue;
+        }
+
+        allowed = false;
+        break;
+      }
+
+      if (this._permissions[key] !== conditions[key]) {
+        allowed = false;
 
         break;
       }
     }
 
-    return show;
+    return allowed;
   }
 }
