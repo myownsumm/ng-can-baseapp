@@ -7,3 +7,9 @@ export interface INgCanPermissionsCheckable {
 export interface INgCanPermissions {
   [key: string]: boolean;
 }
+
+export type THideApproach = 'visibility';
+
+export interface IModuleOptions {
+  hide_approach: THideApproach;
+}
