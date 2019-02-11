@@ -1,10 +1,15 @@
-import { Injectable } from '@angular/core';
-import { INgCanPermissions, INgCanPermissionsCheckable } from '../ng-can.typings';
+import { ElementRef, Injectable } from '@angular/core';
+import {
+  INgCanPermissions,
+  INgCanPermissionsCheckable,
+  INgCanHideApproachesControllable,
+  THideApproach
+} from '../ng-can.typings';
 
 @Injectable({
   providedIn: 'root'
 })
-export class NgCanService implements INgCanPermissionsCheckable {
+export class NgCanService implements INgCanPermissionsCheckable, INgCanHideApproachesControllable {
   private _permissions: INgCanPermissions = {};
 
   constructor() {
@@ -39,5 +44,43 @@ export class NgCanService implements INgCanPermissionsCheckable {
     }
 
     return allowed;
+  }
+
+  hideElement(el: ElementRef, hideApproach: THideApproach): void {
+    switch (hideApproach) {
+      case 'visibility': {
+        el.nativeElement.style.visibility = 'hidden';
+
+        break;
+      }
+
+      case 'hidden': {
+        el.nativeElement.hidden = true;
+
+        break;
+      }
+
+      default:
+        throw new Error(`Unknown Hide Approach ${hideApproach}`);
+    }
+  }
+
+  showElement(el: ElementRef, hideApproach: THideApproach): void {
+    switch (hideApproach) {
+      case 'visibility': {
+        el.nativeElement.style.visibility = 'visible';
+
+        break;
+      }
+
+      case 'hidden': {
+        el.nativeElement.hidden = false;
+
+        break;
+      }
+
+      default:
+        throw new Error(`Unknown Hide Approach ${hideApproach}`);
+    }
   }
 }
