@@ -10,7 +10,9 @@ import { NgCanModule } from '../../projects/ng-can/src/lib/ng-can.module';
   ],
   imports: [
     BrowserModule,
-    NgCanModule
+    NgCanModule.forChild({
+      hide_approach: 'visibility'
+    })
   ],
   providers: [],
   bootstrap: [AppComponent],
