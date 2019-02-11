@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NgCanDirective } from './can.directive';
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ViewChild } from '@angular/core';
+import { MODULE_OPTIONS } from '../module.options';
 
 @Component({
   template: `
@@ -11,16 +12,32 @@ import { Component, DebugElement } from '@angular/core';
   ]
 })
 class SandboxOneComponent {
+  @ViewChild(NgCanDirective) ngCanDirective;
 }
 
 @Component({
   template: `
-    <div id="some-div-2" ng-can [conditions]="{read: true}" [permissions]="{read: true}"></div>`,
+    <div id="some-div-2" ng-can [conditions]="{read: true}" [permissions]="{read: true}"
+         [hideApproach]="'hidden'"></div>`,
   providers: [
     NgCanDirective
   ]
 })
 class SandboxTwoComponent {
+  @ViewChild(NgCanDirective) ngCanDirective;
+}
+
+
+@Component({
+  template: `
+    <div id="some-div-3" ng-can [conditions]="{read: true}" [permissions]="{read: false}"
+         [hideApproach]="'hidden'"></div>`,
+  providers: [
+    NgCanDirective
+  ]
+})
+class SandboxThreeComponent {
+  @ViewChild(NgCanDirective) ngCanDirective;
 }
 
 describe('NgCanDirective', () => {
@@ -28,16 +45,29 @@ describe('NgCanDirective', () => {
   let fixtureOne: ComponentFixture<SandboxOneComponent>;
   let debugElementOne: DebugElement;
 
-  let componentTwo: SandboxOneComponent;
-  let fixtureTwo: ComponentFixture<SandboxOneComponent>;
+  let componentTwo: SandboxTwoComponent;
+  let fixtureTwo: ComponentFixture<SandboxTwoComponent>;
   let debugElementTwo: DebugElement;
+
+  let componentThree: SandboxThreeComponent;
+  let fixtureThree: ComponentFixture<SandboxThreeComponent>;
+  let debugElementThree: DebugElement;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [
         SandboxOneComponent,
         SandboxTwoComponent,
+        SandboxThreeComponent,
         NgCanDirective
+      ],
+      providers: [
+        {
+          provide: MODULE_OPTIONS,
+          useValue: {
+            hide_approach: 'visibility'
+          }
+        },
       ]
     });
 
@@ -49,19 +79,39 @@ describe('NgCanDirective', () => {
     componentTwo = fixtureTwo.componentInstance;
     debugElementTwo = fixtureTwo.debugElement;
 
+    fixtureThree = TestBed.createComponent(SandboxThreeComponent);
+    componentThree = fixtureThree.componentInstance;
+    debugElementThree = fixtureThree.debugElement;
+
     fixtureOne.detectChanges();
     fixtureTwo.detectChanges();
+    fixtureThree.detectChanges();
   });
 
-  it('should hide SandboxOneComponent', () => {
+  it('should hide SandboxOneComponent by permissions/conditions set', () => {
     const node = debugElementOne.nativeElement.querySelector('#some-div');
 
     expect(node.style.visibility).toBe('hidden');
   });
 
-  it('should show SandboxTwoComponent', () => {
+  it('should show SandboxTwoComponent by permissions/conditions set', () => {
     const node = debugElementTwo.nativeElement.querySelector('#some-div-2');
 
     expect(node.style.visibility).not.toBe('hidden');
+  });
+
+  it('should use default Hide Approach set from Module Options, but it can be overwritten by [hideApproach] property', () => {
+    expect(componentOne.ngCanDirective['hideApproach']).toBe('visibility');
+    expect(componentTwo.ngCanDirective['hideApproach']).toBe('hidden');
+  });
+
+  it('should control visibility property with Hide Approach "visibility"', () => {
+    const node = debugElementOne.nativeElement.querySelector('#some-div');
+    expect(node.style.visibility).toBe('hidden');
+  });
+
+  it('should control hidden HTML property with Hide Approach "hidden"', () => {
+    const node = debugElementThree.nativeElement.querySelector('#some-div-3');
+    expect(node.hidden).toBe(true);
   });
 });
