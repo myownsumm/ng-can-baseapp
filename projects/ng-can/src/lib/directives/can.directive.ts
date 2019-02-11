@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Inject, Input, OnInit } from '@angular/core';
 import { NgCanService } from '../services/ng-can.service';
-import { IModuleOptions, INgCanPermissions } from '../ng-can.typings';
+import { IModuleOptions, INgCanPermissions, THideApproach } from '../ng-can.typings';
 import { MODULE_OPTIONS } from '../module.options';
 
 @Directive({
@@ -10,13 +10,15 @@ export class NgCanDirective implements OnInit {
   @Input() conditions: INgCanPermissions = {};
   @Input() permissions: INgCanPermissions = {};
   @Input() strictMode: boolean;
+  @Input() hideApproach: THideApproach = this.options.hide_approach;
 
   constructor(protected el: ElementRef, protected ngCanService: NgCanService,
               @Inject(MODULE_OPTIONS) protected options: IModuleOptions) {
-    this.hideElement();
   }
 
   ngOnInit(): void {
+    this.hideElement();
+
     this.ngCanService.loadPermissions(this.permissions);
     const needToShow = this.ngCanService.checkConditions(this.conditions, this.strictMode);
 
@@ -26,10 +28,10 @@ export class NgCanDirective implements OnInit {
   }
 
   hideElement() {
-    this.el.nativeElement.style.visibility = 'hidden';
+    this.ngCanService.hideElement(this.el, this.hideApproach);
   }
 
   showElement() {
-    this.el.nativeElement.style.visibility = 'visible';
+    this.ngCanService.showElement(this.el, this.hideApproach);
   }
 }
